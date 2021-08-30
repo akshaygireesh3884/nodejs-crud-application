@@ -12,9 +12,9 @@ var config = require('../config/default.json');
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || config.port);
+var port = normalizePort(process.env.PORT || 8080);
 app.set('port', port);
-
+console.log(port);
 /**
  * Create HTTP server.
  */

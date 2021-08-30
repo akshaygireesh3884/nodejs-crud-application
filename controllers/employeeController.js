@@ -4,7 +4,7 @@ const  empModel =require("../db/employee");
 const getEmployee = async (req,res) => {
   try{
     const response = await empModel.findAll();
-    res.json({"status":200,"data":response})
+    res.json(response)
   }
   catch(err){
    res.json({"status":400,"message":err});
@@ -15,7 +15,7 @@ const getEmployee = async (req,res) => {
 const createEmployee = async (req,res) => {
   try{
     const response = await empModel.create(req.body.name);
-    res.json({"status":200,"data":response})
+    res.json(response)
   }
   catch(err){
    res.json({"status":400,"message":err});
@@ -26,7 +26,7 @@ const createEmployee = async (req,res) => {
 const getEmployeeById = async (req,res) => {
   try{
      const response = await empModel.findById(req.params.id);
-     res.json({"status":200,"data":response})
+     res.json(response)
   }
   catch(err){
    res.json({"status":400,"message":err.message});
@@ -37,7 +37,7 @@ const getEmployeeById = async (req,res) => {
 const updateEmployeeById = async (req,res) => {
   try{
      const response = await empModel.update(req.params.id,req.body.name);
-     res.json({"status":200,"data":response})
+     res.json(response)
   }
   catch(err){
    res.json({"status":400,"message":err.message});
@@ -48,7 +48,7 @@ const updateEmployeeById = async (req,res) => {
 const deleteEmployeeById = async (req,res) => {
   try{
      const response = await empModel.deleteById(req.params.id);
-     res.json({"status":200,"data":response})
+     res.json(response)
   }
   catch(err){
    res.json({"status":400,"message":err.message});
