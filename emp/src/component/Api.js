@@ -1,26 +1,15 @@
-import axios from 'axios';
-import React, { Component } from 'react';
+import React,{useState} from "react";
+import axios from "axios";
 
-class Api extends Component{
-    constructor(){
-        super();
-        this.state ={
-            posts : []
-        }
-    }
-    componentDidMount (){
-           fetch("https://jsonplaceholder.typicode.com/posts").then(response =>{
-                console.log(response);
-                this.setState({posts:response.data});
-            });
-        }
-
-        render(){
-            return(
-                <h1>api call</h1>
-            );
-        }
+const GetEmployeeRecords = () =>
+{
+    const [empList,setEmpList] = useState([]);
+    
+        axios.get("http://localhost:8080/api/v1/employeeserv/employees").then(response =>
+            response.data
+        )
+        .then(result => setEmpList(result))
+        .catch(error=>console.log(error));
+    return empList;
 }
-
-  
-  export default Api;
+export default GetEmployeeRecords;
