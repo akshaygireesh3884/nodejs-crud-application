@@ -3,6 +3,7 @@ import {useTable} from 'react-table';
 import axios from "axios";
 import './Table.css';
 import { Pencil,Trash } from 'react-bootstrap-icons';
+import { render } from "jade";
 
 
 
@@ -53,7 +54,7 @@ export const BasicTable = () => {
                 <span>< Pencil 
                 style={{ fontSize: 20 }}
                 color="disabled"  
-               /> < Trash onClick ={handleClick}
+               /> < Trash onClick ={ ()=>{handleClick(cell.row.original.id)}}
                style={{ fontSize: 20 }}
                color="disabled"  
               /> </span>
@@ -78,11 +79,15 @@ export const BasicTable = () => {
         columns,
         data
     });
-    const {getTableProps,getTableBodyProps,headerGroups,rows,prepareRow} =tableInstance ;
+    const {getTableProps,getTableBodyProps,headerGroups,rows,prepareRow} = tableInstance ;
 
-    const handleClick = () => {
+    const handleClick = (id) => {
         alert("clicked");
-        console.log(rows.value);
+        axios.delete(`http://localhost:8080/api/v1/employeeserv/employees/${id}`).then(response =>{
+           console.log(response.data)
+           }
+        )
+        .catch(error=>console.log(error));
       }
     return (
         <div >
