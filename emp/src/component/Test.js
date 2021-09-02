@@ -50,7 +50,7 @@ class Test extends Component{
    render(){
      const x =this.state.showForm ;
         return (
-            <div>
+            <div id ="form">
             <button   onClick={() =>this.clickButton()}>Add</button>
             {x && (
                 <form> 

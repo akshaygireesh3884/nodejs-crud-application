@@ -29,3 +29,10 @@ table th {
     background-color: #04AA6D;
     color: white;
 }
+
+#btn_align {
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 20px;
+}

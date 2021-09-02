@@ -1,10 +1,10 @@
-import React,{ useState,useEffect,useMemo } from "react";
-import {useTable} from 'react-table';
+import React,{ useState,useEffect,useMemo} from "react";
+import {useTable,useSortBy,useGlobalFilter,usePagination} from 'react-table';
 import axios from "axios";
 import './Table.css';
 import { Pencil,Trash } from 'react-bootstrap-icons';
-import { render } from "jade";
-
+import {format} from 'date-fns';
+import { GlobalFilter } from "./GlobalFIlter";
 
 
 export const BasicTable = () => {
@@ -12,6 +12,7 @@ export const BasicTable = () => {
         {
            Header:'ID', 
            accessor:'id',
+           
         },
         {
             Header:'FIRST NAME',
@@ -40,7 +41,9 @@ export const BasicTable = () => {
          {
             Header:'DOJ', 
             accessor:'doj',
-    
+            Cell:({value})=>{
+                return format(new Date(value),'dd/MM/yyyy')
+            }
          },
          {
             Header:'ADDRESS', 
@@ -72,15 +75,15 @@ export const BasicTable = () => {
     },[]);
     
     const columns = useMemo(()=>Columns,[]);
-    // const data =useMemo(()=>empList,[]);
-    const data = empList ;
+    const data = useMemo(()=>empList);
+    // const data = empList ;
     console.log(data);
    const tableInstance = useTable({
         columns,
         data
-    });
-    const {getTableProps,getTableBodyProps,headerGroups,rows,prepareRow} = tableInstance ;
-
+    },/*useGlobalFilter*/useSortBy,usePagination);
+    const {getTableProps,getTableBodyProps,headerGroups,page,nextPage,previousPage,prepareRow,/*state,setGlobalFilter*/} = tableInstance ;
+    // const {globalFilter} =state
     const handleClick = (id) => {
         alert("clicked");
         axios.delete(`http://localhost:8080/api/v1/employeeserv/employees/${id}`).then(response =>{
@@ -91,6 +94,7 @@ export const BasicTable = () => {
       }
     return (
         <div >
+            {/* <GlobalFilter filter={globalFilter} setFilter ={setGlobalFilter}/> */}
             {/* <div>
             <p style={{float: "right",marginRight:"60px"}}><Test/></p>
             </div> */}
@@ -101,7 +105,7 @@ export const BasicTable = () => {
                         <tr {...headerGroup.getHeaderGroupProps()}>
                             {
                                 headerGroup.headers.map((column) =>(
-                                    <th {...column.getHeaderProps()}>{column.render('Header')}</th>
+                                    <th {...column.getHeaderProps(column.getSortByToggleProps())}>{column.render('Header')}</th>
                                 ))
                             }
                            
@@ -112,7 +116,7 @@ export const BasicTable = () => {
                 </thead>
                 <tbody {...getTableBodyProps()}>
                     {
-                        rows.map(row =>{
+                        page.map(row =>{
                             prepareRow(row)
                             return (
                                 <tr {...row.getRowProps()}>
@@ -129,8 +133,12 @@ export const BasicTable = () => {
                         })
                     }
                   
-                </tbody>
+                </tbody> 
             </table>
+            <div id="btn_align">
+                <button onClick={()=>previousPage()}>Previous</button>
+                <button onClick={()=>nextPage()}>Next</button>
+            </div>
         </div>
     )
 }
