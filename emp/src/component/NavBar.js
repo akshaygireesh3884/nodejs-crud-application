@@ -1,8 +1,10 @@
 import React from "react";
 import {BrowserRouter as Router,Switch,Route,Link} from 'react-router-dom';
-import {BasicTable} from './BasicTable';
-import Test from "./Test";
+import BasicTable from './BasicTable';
+import AddForm from "./AddForm";
 import './NavBar.css';
+import EditForm from "./EditForm";
+
 const NavBar = () =>{
     return (
         <Router>
@@ -18,7 +20,8 @@ const NavBar = () =>{
             </div>
             <Switch>
                 <Route exact path ="/"><BasicTable/></Route>
-                <Route path ="/employee"><Test/></Route>
+                <Route path ="/employee"><AddForm/></Route>
+                <Route  path="/edit/:id"><EditForm/></Route>
             </Switch>
         </Router>
     )

@@ -1,8 +1,8 @@
 import axios from 'axios';
 import React, { Component } from 'react';
-import './Test.css';
-import { BasicTable } from './BasicTable';
-class Test extends Component{
+import { Redirect } from 'react-router-dom';
+import './AddForm.css';
+class AddForm extends Component{
     constructor(props){
         super(props);
         this.state = {
@@ -14,25 +14,18 @@ class Test extends Component{
             salary:"",
             doj:"",
             address:"",
+            // redirect: false 
         };
     }
-    clickButton = (e) => {
-        this.setState({showForm:!this.state.showForm})
-     }
+  
+    // clickButton = (e) => {
+    //     this.setState({showForm:!this.state.showForm})
+    //  }
      inputSet =(e) =>{
          this.setState({[e.target.name]:e.target.value})
      }
      saveEmployee = (e) =>{
          e.preventDefault();
-        //  var body = {
-        //     firstName:this.state.firstName,
-        //     lastName:this.state.lastName,
-        //     role:this.state.role,
-        //     designation:this.state.designation,
-        //     salary:this.state.salary,
-        //     doj:this.state.doj,
-        //     address:this.state.address,
-        //  }
         axios.post("http://localhost:8080/api/v1/employeeserv/employees",{
             firstName:this.state.firstName,
             lastName:this.state.lastName,
@@ -43,16 +36,15 @@ class Test extends Component{
             address:this.state.address,
         }).then((response)=>{
             alert("saved");
-           
-
-        })
+            this.setState({ redirect: true });  
+        }).then(<Redirect to={"/"}></Redirect>).catch(error=>console.log(error));
      }
    render(){
-     const x =this.state.showForm ;
+    //  const x =this.state.showForm ;
         return (
             <div id ="form">
-            <button   onClick={() =>this.clickButton()}>Add</button>
-            {x && (
+            {/* <button   onClick={() =>this.clickButton()}>Add</button>
+            {x && ( */}
                 <form> 
                         <div className ="form-group">
                             <label>First Name</label>
@@ -87,10 +79,10 @@ class Test extends Component{
                         </div>
                 </form> 
                 
-            )}
+            {/* )} */}
             </div>
         );
 }
 
 }
-export default Test
+export default AddForm

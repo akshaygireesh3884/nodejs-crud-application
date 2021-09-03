@@ -1,63 +1,83 @@
 import React,{ useState,useEffect,useMemo} from "react";
-import {useTable,useSortBy,useGlobalFilter,usePagination} from 'react-table';
+import {useTable,useSortBy,usePagination,useFilters} from 'react-table';
 import axios from "axios";
 import './Table.css';
-import { Pencil,Trash } from 'react-bootstrap-icons';
+import { Pencil,Trash ,Search} from 'react-bootstrap-icons';
 import {format} from 'date-fns';
-import { GlobalFilter } from "./GlobalFIlter";
+import {Link} from 'react-router-dom';
+// import { GlobalFilter } from "./GlobalFilter";
+import { ColumnFilter } from "./ColumnFilter";
 
-
-export const BasicTable = () => {
+ const BasicTable = () => {
     const Columns =[
         {
+           width: 200,
            Header:'ID', 
            accessor:'id',
+           Filter :ColumnFilter
            
         },
         {
             Header:'FIRST NAME',
             accessor:'firstName',
+            Filter :ColumnFilter,
+            disableFilters:true
+
     
          },
          {
             Header:'LAST NAME', 
             accessor:'lastName',
+            Filter :ColumnFilter,
+            disableFilters:true
     
          },
          {
             Header:'ROLE', 
             accessor:'role',
+            Filter :ColumnFilter,
+            disableFilters:true
+
          },
          {
             Header:'DESIGNATION', 
             accessor:'designation',
+            Filter :ColumnFilter,
+            disableFilters:true
     
          },
          {
             Header:'SALARY', 
             accessor:'salary',
+            Filter :ColumnFilter,
+            disableFilters:true
     
          },
          {
             Header:'DOJ', 
             accessor:'doj',
             Cell:({value})=>{
-                return format(new Date(value),'dd/MM/yyyy')
-            }
+                return format(new Date(value),'dd-MM-yyyy')
+            },
+            Filter :ColumnFilter,
+            disableFilters:true
+
          },
          {
             Header:'ADDRESS', 
             accessor:'address',
-    
+            Filter :ColumnFilter,
+            disableFilters:true
          },
          {
             width: 200,
             Header: "Actions",
             Cell: ({ cell }) => (
-                <span>< Pencil 
+                <span><Link  to={`/edit/${cell.row.original.id}`}>< Pencil 
                 style={{ fontSize: 20 }}
                 color="disabled"  
-               /> < Trash onClick ={ ()=>{handleClick(cell.row.original.id)}}
+               /> 
+            </Link>< Trash onClick ={ ()=>{handleClick(cell.row.original.id)}}
                style={{ fontSize: 20 }}
                color="disabled"  
               /> </span>
@@ -65,39 +85,60 @@ export const BasicTable = () => {
           }
     ]
     const [empList,setEmpList] = useState([]);
+    const [empId,setEmpId] = useState([]);
     useEffect(()=>{
-        axios.get("http://localhost:8080/api/v1/employeeserv/employees").then(response =>
-            response.data
-        )
-        .then(result => setEmpList(result))
-        .catch(error=>console.log(error));
-    
+        getEmployees();
     },[]);
-    
+    const getEmployees =() =>{
+        axios.get("http://localhost:8080/api/v1/employeeserv/employees").then(response =>{
+            console.log(response.data)
+        setEmpList( response.data) ;
+    }
+    )
+    .catch(error=>console.log(error));
+    }
     const columns = useMemo(()=>Columns,[]);
     const data = useMemo(()=>empList);
-    // const data = empList ;
-    console.log(data);
-   const tableInstance = useTable({
+    const tableInstance = useTable({
         columns,
         data
-    },/*useGlobalFilter*/useSortBy,usePagination);
-    const {getTableProps,getTableBodyProps,headerGroups,page,nextPage,previousPage,prepareRow,/*state,setGlobalFilter*/} = tableInstance ;
-    // const {globalFilter} =state
+    },useFilters,useSortBy,usePagination);
+    const {getTableProps,getTableBodyProps,headerGroups,page,nextPage,previousPage,prepareRow} = tableInstance ;
+
     const handleClick = (id) => {
         alert("clicked");
         axios.delete(`http://localhost:8080/api/v1/employeeserv/employees/${id}`).then(response =>{
            console.log(response.data)
+            getEmployees();
            }
         )
         .catch(error=>console.log(error));
       }
+    
+    const searchEmployee = (e) =>{
+        // e.preventDefault();
+        let id = empId;
+       axios.get(`http://localhost:8080/api/v1/employeeserv/employees/${id}`).then(response =>{
+            console.log(response.data);
+            setEmpList(response.data)
+            }
+         )
+         .catch(error=>console.log(error));
+    }
+    const inputSet = (e) =>{
+        console.log(e.target.value)
+        setEmpId(e.target.value);
+        console.log(empId);
+    }
     return (
         <div >
-            {/* <GlobalFilter filter={globalFilter} setFilter ={setGlobalFilter}/> */}
-            {/* <div>
-            <p style={{float: "right",marginRight:"60px"}}><Test/></p>
-            </div> */}
+            <div>
+            {/* <form>
+                <input type="text"onChange={inputSet} placeholder="Search.." name="search"/>
+                <button onClick={(e)=>searchEmployee(e)}><Search/></button>
+             </form>              */}
+            </div>
+            {/* <GlobalFilter filter ={globalFilter} setFilter ={setGlobalFilter}/> */}
             <table {...getTableProps()}>
                 <thead>
                     {
@@ -105,7 +146,9 @@ export const BasicTable = () => {
                         <tr {...headerGroup.getHeaderGroupProps()}>
                             {
                                 headerGroup.headers.map((column) =>(
-                                    <th {...column.getHeaderProps(column.getSortByToggleProps())}>{column.render('Header')}</th>
+                                    <th {...column.getHeaderProps(column.getSortByToggleProps())}>{column.render('Header')}
+                                    <div>{column.canFilter ? column.render('Filter'):null}</div>
+                                    </th>
                                 ))
                             }
                            
@@ -142,3 +185,5 @@ export const BasicTable = () => {
         </div>
     )
 }
+
+export default BasicTable ;
