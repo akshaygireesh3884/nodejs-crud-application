@@ -2,7 +2,7 @@ import React,{ useState,useEffect,useMemo} from "react";
 import {useTable,useSortBy,usePagination,useFilters} from 'react-table';
 import axios from "axios";
 import './Table.css';
-import { Pencil,Trash ,Search} from 'react-bootstrap-icons';
+import { Pencil,Trash ,Search,ThreeDotsVertical} from 'react-bootstrap-icons';
 import {format} from 'date-fns';
 import {Link} from 'react-router-dom';
 // import { GlobalFilter } from "./GlobalFilter";
@@ -70,17 +70,21 @@ import { ColumnFilter } from "./ColumnFilter";
             disableFilters:true
          },
          {
-            width: 200,
+            width: 400,
             Header: "Actions",
             Cell: ({ cell }) => (
                 <span><Link  to={`/edit/${cell.row.original.id}`}>< Pencil 
                 style={{ fontSize: 20 }}
                 color="disabled"  
                /> 
-            </Link>< Trash onClick ={ ()=>{handleClick(cell.row.original.id)}}
+            </Link>
+            <ThreeDotsVertical   style={{ fontSize: 20 }}
+                color="disabled"  />
+            < Trash onClick ={ ()=>{handleClick(cell.row.original.id)}}
                style={{ fontSize: 20 }}
                color="disabled"  
-              /> </span>
+              /> 
+              </span>
             )
           }
     ]
