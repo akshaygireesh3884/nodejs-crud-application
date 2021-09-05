@@ -7,6 +7,7 @@ import {format} from 'date-fns';
 import {Link} from 'react-router-dom';
 // import { GlobalFilter } from "./GlobalFilter";
 import { ColumnFilter } from "./ColumnFilter";
+import Box from './Modal';
 
  const BasicTable = () => {
     const Columns =[
@@ -73,23 +74,28 @@ import { ColumnFilter } from "./ColumnFilter";
             width: 400,
             Header: "Actions",
             Cell: ({ cell }) => (
+                <div>
                 <span><Link  to={`/edit/${cell.row.original.id}`}>< Pencil 
                 style={{ fontSize: 20 }}
-                color="disabled"  
-               /> 
-            </Link>
-            <ThreeDotsVertical   style={{ fontSize: 20 }}
-                color="disabled"  />
-            < Trash onClick ={ ()=>{handleClick(cell.row.original.id)}}
-               style={{ fontSize: 20 }}
-               color="disabled"  
-              /> 
-              </span>
+                color="disabled"/></Link>
+                </span>
+                <span>
+                <ThreeDotsVertical  onClick ={ ()=>{modalBox(cell.row.original.id)}}
+                style={{ fontSize: 20 }} 
+                color="disabled" />
+                </span>
+                <span>
+                < Trash onClick ={ ()=>{handleClick(cell.row.original.id)}}
+                 style={{ fontSize: 20 }}
+                 color="disabled" /> 
+                </span>
+                </div> 
             )
           }
     ]
     const [empList,setEmpList] = useState([]);
     const [empId,setEmpId] = useState([]);
+    const [modalShow,setModalShow] =useState(false);
     useEffect(()=>{
         getEmployees();
     },[]);
@@ -119,15 +125,9 @@ import { ColumnFilter } from "./ColumnFilter";
         .catch(error=>console.log(error));
       }
     
-    const searchEmployee = (e) =>{
-        // e.preventDefault();
-        let id = empId;
-       axios.get(`http://localhost:8080/api/v1/employeeserv/employees/${id}`).then(response =>{
-            console.log(response.data);
-            setEmpList(response.data)
-            }
-         )
-         .catch(error=>console.log(error));
+    const modalBox = (id) =>{
+        setEmpId(id);
+        setModalShow(!modalShow);
     }
     const inputSet = (e) =>{
         console.log(e.target.value)
@@ -136,12 +136,13 @@ import { ColumnFilter } from "./ColumnFilter";
     }
     return (
         <div >
-            <div>
+           
+            { modalShow &&(<Box data={empId}/>)}
             {/* <form>
                 <input type="text"onChange={inputSet} placeholder="Search.." name="search"/>
                 <button onClick={(e)=>searchEmployee(e)}><Search/></button>
              </form>              */}
-            </div>
+           
             {/* <GlobalFilter filter ={globalFilter} setFilter ={setGlobalFilter}/> */}
             <table {...getTableProps()}>
                 <thead>
