@@ -13,14 +13,10 @@ class AddForm extends Component{
             designation:"",
             salary:"",
             doj:"",
-            address:"",
-            // redirect: false 
+            address:""
         };
     }
   
-    // clickButton = (e) => {
-    //     this.setState({showForm:!this.state.showForm})
-    //  }
      inputSet =(e) =>{
          this.setState({[e.target.name]:e.target.value})
      }
@@ -40,11 +36,8 @@ class AddForm extends Component{
         }).then(<Redirect to={"/"}></Redirect>).catch(error=>console.log(error));
      }
    render(){
-    //  const x =this.state.showForm ;
         return (
             <div id ="form">
-            {/* <button   onClick={() =>this.clickButton()}>Add</button>
-            {x && ( */}
                 <form> 
                         <div className ="form-group">
                             <label>First Name</label>
@@ -78,8 +71,6 @@ class AddForm extends Component{
                              <button onClick={this.saveEmployee} className="btn btn-primary">Save</button>
                         </div>
                 </form> 
-                
-            {/* )} */}
             </div>
         );
 }

@@ -2,14 +2,13 @@ import React,{ useState,useEffect,useMemo} from "react";
 import {useTable,useSortBy,usePagination,useFilters} from 'react-table';
 import axios from "axios";
 import './Table.css';
-import { Pencil,Trash ,Search,ThreeDotsVertical} from 'react-bootstrap-icons';
+import { Pencil,Trash ,ThreeDotsVertical} from 'react-bootstrap-icons';
 import {format} from 'date-fns';
 import {Link} from 'react-router-dom';
-// import { GlobalFilter } from "./GlobalFilter";
 import { ColumnFilter } from "./ColumnFilter";
 import Box from './Modal';
 
- const BasicTable = () => {
+ const Table = () => {
     const Columns =[
         {
            width: 200,
@@ -96,9 +95,11 @@ import Box from './Modal';
     const [empList,setEmpList] = useState([]);
     const [empId,setEmpId] = useState([]);
     const [modalShow,setModalShow] =useState(false);
+
     useEffect(()=>{
         getEmployees();
     },[]);
+
     const getEmployees =() =>{
         axios.get("http://localhost:8080/api/v1/employeeserv/employees").then(response =>{
             console.log(response.data)
@@ -107,12 +108,15 @@ import Box from './Modal';
     )
     .catch(error=>console.log(error));
     }
+
     const columns = useMemo(()=>Columns,[]);
     const data = useMemo(()=>empList);
+
     const tableInstance = useTable({
         columns,
         data
     },useFilters,useSortBy,usePagination);
+
     const {getTableProps,getTableBodyProps,headerGroups,page,nextPage,previousPage,prepareRow} = tableInstance ;
 
     const handleClick = (id) => {
@@ -129,21 +133,11 @@ import Box from './Modal';
         setEmpId(id);
         setModalShow(!modalShow);
     }
-    const inputSet = (e) =>{
-        console.log(e.target.value)
-        setEmpId(e.target.value);
-        console.log(empId);
-    }
+    
     return (
         <div >
            
             { modalShow &&(<Box data={empId}/>)}
-            {/* <form>
-                <input type="text"onChange={inputSet} placeholder="Search.." name="search"/>
-                <button onClick={(e)=>searchEmployee(e)}><Search/></button>
-             </form>              */}
-           
-            {/* <GlobalFilter filter ={globalFilter} setFilter ={setGlobalFilter}/> */}
             <table {...getTableProps()}>
                 <thead>
                     {
@@ -191,4 +185,4 @@ import Box from './Modal';
     )
 }
 
-export default BasicTable ;
+export default Table ;
